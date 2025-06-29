@@ -48,13 +48,6 @@ jobs:
           remove-android: 'true'
           remove-haskell: 'true'
           remove-codeql: 'true'
-
-      - name: Set hostname and username
-        run: |
-          sudo hostnamectl set-hostname "scmcc"
-          sudo sed -i 's/^runner:/lede:/' /etc/passwd
-          sudo sed -i 's/^runner:/lede:/' /etc/passwd
-          echo 'lede ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /etc/sudoers.d/temp
          
       - name: Configure Git
         run: |
@@ -279,6 +272,8 @@ jobs:
          sed -i 's/${scm_version}//' ./common/scripts/setlocalversion
          sudo sed -i 's/-4k/${{ github.event.inputs.KERNEL_SUFFIX }}/g' ./common/arch/arm64/configs/gki_defconfig
          sudo sed -i -e 's/^PATCHLEVEL = 6$/PATCHLEVEL = 12/' -e 's/^SUBLEVEL = 30$/SUBLEVEL = 27/' ./common/Makefile
+         sudo sed -i '1i KBUILD_BUILD_USER = my-user' ./common/Makefile
+         sudo sed -i '1i KBUILD_BUILD_HOST = my-host' ./common/Makefile
         
       # - name: Add sched_ext
       #   if: ${{inputs.enable_feature_z }}
