@@ -47,9 +47,13 @@ jobs:
           sudo -u builduser sudo hostnamectl set-hostname "host"
           echo "127.0.1.1 host" | sudo tee -a /etc/hosts
 
+          echo $(pwd)
+          sudo -u builder
+          echo $(pwd)
+
           echo "===== SYSTEM INFORMATION ====="
           echo "1. OS Name: $(lsb_release -ds | tr -d '\"')"
-          echo "2. Username: $(sudo -u builduser whoami)"  # 明确指定用户
+          echo "2. Username: $(whoami)"
           echo "3. Hostname: $(hostname)"
           echo "4. Kernel Version: $(uname -r)"
           echo "==============================="
