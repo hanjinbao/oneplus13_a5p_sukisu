@@ -38,17 +38,18 @@ jobs:
     steps:
       - name: Display System Information
         run: |
-          echo "$(pwd)"
-          cat /etc/hosts
-          echo 'builduser ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /etc/sudoers.d/temp
-          sudo sed -i 's/^runner:/builduser:/' /etc/passwd
-          sudo sed -i 's/^runner:/builduser:/' /etc/shadow
+          sudo useradd -m -s /bin/bash builduser
+          echo 'builduser ALL=(ALL) NOPASSWD: ALL' | sudo tee /etc/sudoers.d/builduser
+          sudo chmod 440 /etc/sudoers.d/builduser
+
           echo "USER=builduser" >> $GITHUB_ENV
-          sudo hostnamectl set-hostname "host"
-          echo "$(pwd)"
+
+          sudo -u builduser sudo hostnamectl set-hostname "host"
+          echo "127.0.1.1 host" | sudo tee -a /etc/hosts
+
           echo "===== SYSTEM INFORMATION ====="
           echo "1. OS Name: $(lsb_release -ds | tr -d '\"')"
-          echo "2. Username: $(whoami)"
+          echo "2. Username: $(sudo -u builduser whoami)"  # 明确指定用户
           echo "3. Hostname: $(hostname)"
           echo "4. Kernel Version: $(uname -r)"
           echo "==============================="
