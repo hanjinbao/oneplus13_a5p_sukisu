@@ -39,10 +39,10 @@ jobs:
       - name: Display System Information
         run: |
           sudo hostnamectl set-hostname "host"
+          sed -i 's/^runner:/builduser:/' /etc/passwd
+          sed -i 's/^runner:/builduser:/' /etc/shadow
           echo "$(pwd)"
           cat /etc/hosts
-          sudo sed -i 's/^runner:/builduser:/' /etc/passwd
-          sudo sed -i 's/^runner:/builduser:/' /etc/shadow
           echo "USER=builduser" >> $GITHUB_ENV
           echo 'builduser ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /etc/sudoers.d/temp
           echo "$(pwd)"
