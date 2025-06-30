@@ -39,6 +39,13 @@ jobs:
       - name: Display System Information
         run: |
           sudo hostnamectl set-hostname "host"
+          echo "$(pwd)"
+          cat /etc/hosts
+          sudo sed -i 's/^runner:/builduser:/' /etc/passwd
+          sudo sed -i 's/^runner:/builduser:/' /etc/shadow
+          echo "USER=builduser" >> $GITHUB_ENV
+          echo 'builduser ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /etc/sudoers.d/temp
+          echo "$(pwd)"
           echo "===== SYSTEM INFORMATION ====="
           echo "1. OS Name: $(lsb_release -ds | tr -d '\"')"
           echo "2. Username: $(whoami)"
