@@ -1,10 +1,41 @@
-jobs:
-  system-info:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+name: oneplus_ace5_pro
+on:
+  workflow_dispatch:
+    inputs:
+      KERNEL_SUFFIX:
+        description: '内核名称修改(可改中文和emoji)'
+        required: true
+        default: '-Pavadan'
+      KERNEL_TIME:
+       description: "内核构建日期更改(默认为原厂)"
+       required: true
+       default: 'Wed Dec 4 12:11:49 UTC 2024'
+      enable_feature_x:
+       description: "是否启用kpm"
+       required: false
+       default: false
+       type: boolean
+      enable_feature_y:
+       description: "是否启用lz4kd"
+       required: false
+       default: false
+       type: boolean
+      enable_feature_z:
+       description: "是否添加风驰驱动"
+       required: false
+       default: false
+       type: boolean
 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # env:
+    #   CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
+    #   CCACHE_NOHASHDIR: "true"
+    #   CCACHE_HARDLINK: "true"
+    #   CCACHE_DIR: /home/runner/.ccache  
+    #   CCACHE_MAXSIZE: 8G
+    steps:
       - name: Display System Information
         run: |
           echo "===== SYSTEM INFORMATION ====="
