@@ -48,7 +48,7 @@ jobs:
           echo "127.0.1.1 host" | sudo tee -a /etc/hosts
 
           echo $(pwd)
-          sudo -u builduser
+          # sudo -u builduser
           echo $(pwd)
 
           echo "===== SYSTEM INFORMATION ====="
