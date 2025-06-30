@@ -1,0 +1,15 @@
+jobs:
+  system-info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Display System Information
+        run: |
+          echo "===== SYSTEM INFORMATION ====="
+          echo "1. OS Name: $(lsb_release -ds | tr -d '\"')"
+          echo "2. Username: $(whoami)"
+          echo "3. Hostname: $(hostname)"
+          echo "4. Kernel Version: $(uname -r)"
+          echo "==============================="
