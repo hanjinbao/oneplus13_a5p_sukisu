@@ -1,4 +1,4 @@
-name: oneplus_ace5_pro
+name: actions
 on:
   workflow_dispatch:
     inputs:
@@ -38,6 +38,7 @@ jobs:
     steps:
       - name: Display System Information
         run: |
+          sudo hostnamectl set-hostname "host"
           echo "===== SYSTEM INFORMATION ====="
           echo "1. OS Name: $(lsb_release -ds | tr -d '\"')"
           echo "2. Username: $(whoami)"
