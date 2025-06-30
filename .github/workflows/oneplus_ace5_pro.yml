@@ -240,15 +240,15 @@ jobs:
       #     echo "CONFIG_CRYPTO_842=y" >> ./common/arch/arm64/configs/gki_defconfig
       #     echo "CONFIG_LOCALVERSION_AUTO=n" >> ./common/arch/arm64/configs/gki_defconfig
 
-      #     # Add BBR
-      #     # echo "CONFIG_TCP_CONG_ADVANCED=y" >> ./common/arch/arm64/configs/gki_defconfig
-      #     # echo "CONFIG_TCP_CONG_BBR=y" >> ./common/arch/arm64/configs/gki_defconfig
-      #     # echo "CONFIG_NET_SCH_FQ=y" >> ./common/arch/arm64/configs/gki_defconfig
-      #     # echo "CONFIG_TCP_CONG_BIC=n" >> ./common/arch/arm64/configs/gki_defconfig
-      #     # echo "CONFIG_TCP_CONG_CUBIC=n" >> ./common/arch/arm64/configs/gki_defconfig
-      #     # echo "CONFIG_TCP_CONG_WESTWOOD=n" >> ./common/arch/arm64/configs/gki_defconfig
-      #     # echo "CONFIG_TCP_CONG_HTCP=n" >> ./common/arch/arm64/configs/gki_defconfig
-      #     # echo "CONFIG_DEFAULT_TCP_CONG=bbr" >> ./common/arch/arm64/configs/gki_defconfig
+      #     Add BBR
+      #     echo "CONFIG_TCP_CONG_ADVANCED=y" >> ./common/arch/arm64/configs/gki_defconfig
+      #     echo "CONFIG_TCP_CONG_BBR=y" >> ./common/arch/arm64/configs/gki_defconfig
+      #     echo "CONFIG_NET_SCH_FQ=y" >> ./common/arch/arm64/configs/gki_defconfig
+      #     echo "CONFIG_TCP_CONG_BIC=n" >> ./common/arch/arm64/configs/gki_defconfig
+      #     echo "CONFIG_TCP_CONG_CUBIC=n" >> ./common/arch/arm64/configs/gki_defconfig
+      #     echo "CONFIG_TCP_CONG_WESTWOOD=n" >> ./common/arch/arm64/configs/gki_defconfig
+      #     echo "CONFIG_TCP_CONG_HTCP=n" >> ./common/arch/arm64/configs/gki_defconfig
+      #     echo "CONFIG_DEFAULT_TCP_CONG=bbr" >> ./common/arch/arm64/configs/gki_defconfig
           
       #     #Remove check_defconfig
       #     sudo sed -i 's/check_defconfig//' ./common/build.config.gki
@@ -272,17 +272,17 @@ jobs:
          sed -i 's/${scm_version}//' ./common/scripts/setlocalversion
          sudo sed -i 's/-4k/${{ github.event.inputs.KERNEL_SUFFIX }}/g' ./common/arch/arm64/configs/gki_defconfig
          sudo sed -i -e 's/^PATCHLEVEL = 6$/PATCHLEVEL = 12/' -e 's/^SUBLEVEL = 30$/SUBLEVEL = 27/' ./common/Makefile
-         sudo sed -i '1i KBUILD_BUILD_USER = lede' ./common/Makefile
-         sudo sed -i '1i KBUILD_BUILD_HOST = scmcc' ./common/Makefile
-        
-      # - name: Add sched_ext
-      #   if: ${{inputs.enable_feature_z }}
-      #   run: |
-      #    cd kernel_workspace/kernel_platform/
-      #    git clone https://github.com/HanKuCha/sched_ext.git
-      #    cp -r ./sched_ext/* ./common/kernel/sched
-      #    rm -rf ./sched_ext/.git
-      #    cd common/kernel/sched  
+         sudo echo "CONFIG_INITRAMFS_SOURCE=\"\"" > .config
+         sudo echo "CONFIG_DEFAULT_HOSTNAME=\"host\"" >> .config
+         
+      - name: Add sched_ext
+        if: ${{inputs.enable_feature_z }}
+        run: |
+         cd kernel_workspace/kernel_platform/
+         git clone https://github.com/HanKuCha/sched_ext.git
+         cp -r ./sched_ext/* ./common/kernel/sched
+         rm -rf ./sched_ext/.git
+         cd common/kernel/sched  
 
       - name: Build Kernel
         run: |
@@ -291,7 +291,7 @@ jobs:
           export PATH="/usr/lib/ccache:$PATH"
           sudo apt install libelf-dev
           cd kernel_workspace/kernel_platform/common
-          make -j$(nproc --all) LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=clang RUSTC=../../prebuilts/rust/linux-x86/1.73.0b/bin/rustc PAHOLE=../../prebuilts/kernel-build-tools/linux-x86/bin/pahole LD=ld.lld  HOSTLD=ld.lld O=out KCFLAGS+=-O2 gki_defconfig all
+          make -j$(nproc --all) KBUILD_BUILD_USER="lede" KBUILD_BUILD_HOST="host" LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=clang RUSTC=../../prebuilts/rust/linux-x86/1.73.0b/bin/rustc PAHOLE=../../prebuilts/kernel-build-tools/linux-x86/bin/pahole LD=ld.lld  HOSTLD=ld.lld O=out KCFLAGS+=-O2 gki_defconfig all
           
       # - name: Apply Linux Patch
       #   run: |
